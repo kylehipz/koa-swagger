@@ -1,0 +1,123 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Swagger Practice App
+  license:
+    name: Proprietary
+basePath: /v1
+consumes:
+  - application/json
+produces:
+  - application/json
+schemes:
+  - http
+  - https
+paths:
+  ### SWAGGER ###
+  '/swagger.json':
+    get:
+      tags:
+        - Spec
+      operationId: retrieveSpec
+      description: |
+        Retrieve OpenAPI spec.
+      responses:
+        '200':
+          description: Successful
+          schema:
+            type: object
+  '/register':
+    post:
+      description: Admin registers a new user
+      operationId: adminRegisterUser
+      tags:
+        - Register
+      parameters:
+        - name: user
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserRegisterBase'
+      responses:
+        '200':
+          description: User is registered
+          schema:
+            type: object
+        '400':
+          description: Bad request
+          schema:
+            type: object
+        default:
+          description: Unexpected Error
+          schema:
+            type: object
+  ### LOG IN ###
+  '/login':
+    post:
+      description: User log in
+      operationId: userLogIn
+      tags:
+        - LogIn
+      parameters:
+        - name: user
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserLogInBase'
+      responses:
+          '200':
+            description: User is logged in
+            schema:
+              type: object
+          '400':
+            description: Bad request
+            schema:
+              type: object
+          default:
+            description: Unexpected Error
+            schema:
+              type: object
+
+definitions:
+  UserRegisterBase:
+    required:
+      - password
+      - email
+      - userId
+      - userIdType
+      - payload
+      - policyNumber
+    type: object
+    properties:
+      password:
+        type: string
+      email:
+        type: string
+      userId:
+        type: string
+      userIdType:
+        type: string
+      payload:
+        type: string
+      policyNumber:
+        type: string
+  UserLogInBase:
+    required:
+      - email
+      - password
+    type: object
+    properties:
+      email: 
+        type: string
+      password: 
+        type: string
+  UserDeleteBase:
+    required:
+      - email
+      - password
+    type: object
+    properties:
+      email: 
+        type: string
+      password: 
+        type: string
