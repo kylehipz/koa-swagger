@@ -1,12 +1,18 @@
 import koa from 'koa';
-import { koaSwagger } from 'koa2-swagger-ui';
-import yamljs from 'yamljs';
+import swagger2Koa from 'swagger2-koa';
+import * as swagger from 'swagger2';
 import Router from '@koa/router';
 import { routes as registerRoute } from './routes/register.js';
 import { routes as loginRoute } from './routes/login.js';
 
+const { ui, validate } = swagger2Koa;
+
 // yaml load to json
-const spec = yamljs.load('./src/swagger.yaml');
+const spec = swagger.loadDocumentSync('./src/swagger.yaml');
+
+if (!swagger.validateDocument(spec)) {
+  throw Error('Invalid swagger file');
+}
 
 const port = process.env.PORT || 3000;
 
@@ -18,17 +24,11 @@ for (const routes of [registerRoute, loginRoute]) {
   routes(router);
 }
 
-app.use(
-  koaSwagger({
-    routePrefix: '/docs', // host at /swagger instead of default /docs
-    swaggerOptions: {
-      spec
-    }
-  })
-);
-
 app.use(router.routes());
 app.use(router.allowedMethods());
+
+app.use(ui(spec, '/docs'));
+app.use(validate(spec));
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);

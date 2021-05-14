@@ -77,8 +77,31 @@ paths:
             description: Unexpected Error
             schema:
               type: object
+  '/posts':
+    get:
+      description: Get all posts
+      operationId: getPosts
+      tags:
+        - GetPosts
+      responses:
+        '200':
+          description: List of posts
+          schema:
+            $ref: '#/definitions/PostsBase'
 
 definitions:
+  PostsBase:
+    required:
+      - owner
+      - title
+      - body
+    properties:
+      owner:
+        type: string
+      title:
+        type: string
+      body:
+        type: string
   UserRegisterBase:
     required:
       - password
